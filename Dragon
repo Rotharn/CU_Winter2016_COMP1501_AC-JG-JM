@@ -5,6 +5,7 @@ Building[] building;
 Screen screen;
 int fieldHieght, fieldWidth;
 int humanHeight = 10;
+char letter = 'a';
 
 void setup(){
   size(600,600);
