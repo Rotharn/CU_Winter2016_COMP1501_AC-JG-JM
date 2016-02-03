@@ -4,7 +4,8 @@ Player player;
 Building[] building;
 Screen screen;
 int fieldHieght, fieldWidth;
-int test = 10;
+int humanHeight = 10;
+char letter = 'a';
 
 void setup(){
   size(600,600);
