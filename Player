@@ -1,0 +1,33 @@
+public class Player{
+ 
+  float x, y, dir, speed, size;  //creating variables for the players location, dimensions, and direction, and speed
+  
+  //setting the players location and dimensions
+  public Player(float x, float y, float size){
+    this.x = x;
+    this.y = y;
+    this.size = size;
+  }
+  
+  public void update(boolean[] keys){
+    if (keys[1])  //if d is pressed turn clockwise
+      dir+=0.1;
+    else if (keys[3])  //if a is pressed turn counter-clockwise
+      dir-=0.1;
+    
+    if (keys[0] && speed < 2)  //if w is pressed and the player isn't at top speed, increases the players speed
+      speed+=0.1;
+    else if (keys[2] && speed > 0)  //if d is pressed and the player isn't stopped, decreses the players speed
+      speed-=0.1;
+    
+    //updating the players location
+    x += cos(dir) * speed;
+    y += sin(dir) * speed;
+  }
+  
+  //drawing the player using the screen class given in the arguement
+  public void render(Screen screen){
+    color c = color(255, 0, 0);
+    screen.render(x, y, size, size, 0, c);
+  }
+}
