@@ -1,0 +1,78 @@
+boolean[] keys = new boolean[5];  //creating a boolean array to hold if the control keys are being pressed
+
+//creating a player variable for the player to control, along with a fireball for the player to use
+Player player;
+DragonProjectile fire;
+
+//creating an array of building variables to hold the data for the buildings, along with an arrow for the buildings to fire 
+Building[] building;
+TownProjectile arrow;
+
+//creating a screen variable to draw everything with and a vaariable for the dimensions of the field
+Screen screen;
+int fieldHieght, fieldWidth;
+
+void setup(){
+  //setting the screen size and setting the field dimensions
+  size(600,600);
+  fieldWidth = width * 2;
+  fieldHieght = height;
+  
+  //declaring the player variable and their fareball
+  player = new Player(width/2, height/2, 20);
+  fire = new DragonProjectile(0, 0, 0, 0);
+  
+  //declaring and creating 4 buildings
+  building = new Building[4];
+  for (int i = 0; i < building.length; i++)
+    building[i] = new Building(i * width / 2, fieldHieght - 100, 200, 100);
+  
+  //creating the screen class
+  screen = new Screen(0, 0, width, height, fieldWidth, fieldHieght);
+}
+
+void draw(){
+  clear();
+  
+  player.update(keys);  //updating the player
+  
+  if (keys[4])  //checking whether to make a new fireball attack
+    fire = new DragonProjectile(player.x, player.y, 10, player.dir);
+  fire.update();  //updating the players fireball
+  
+  screen.update(player);  //updateing the screen
+  
+  //drawing all the buildings
+  for (int i = 0; i < building.length; i++)
+    building[i].render(screen);
+  player.render(screen);  //drawing the player
+  fire.render(screen);  //drawing the players fireball
+}
+
+//checking which key is pressed and telling the keys variable that it is pressed
+void keyPressed(){
+  if (key == 'w')
+    keys[0] = true;
+  if (key == 'd')
+    keys[1] = true;
+  if (key == 's')
+    keys[2] = true;
+  if (key == 'a')
+    keys[3] = true;
+  if (key == ' ')
+    keys[4] = true;
+}
+
+//checking which key is released and telling the keys variable that it is released
+void keyReleased(){
+  if (key == 'w')
+    keys[0] = false;
+  if (key == 'd')
+    keys[1] = false;
+  if (key == 's')
+    keys[2] = false;
+  if (key == 'a')
+    keys[3] = false;
+  if (key == ' ')
+    keys[4] = false;
+}
