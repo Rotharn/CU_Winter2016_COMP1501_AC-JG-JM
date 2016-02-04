@@ -1,0 +1,25 @@
+public class TownProjectile{
+ 
+  float x, y, size, dir;  //creating variables for the projectiles location, dimensions, and direction
+  
+  //setting the projectiles location, dimensions, and direction
+  public TownProjectile(float x, float y, float size, float dir){
+    this.x = x;
+    this.y = y;
+    this.size = size;
+    this.dir = dir;
+  }
+  
+  //updating the projectiles location
+  public void update(){
+    x += cos(dir) * 5;
+    y += sin(dir) * 5;
+  }
+  
+  //drawing the projectile using the screen class given in the argument
+  public void render(Screen screen){
+    color c = color(255, 100, 0);
+    screen.render(x, y, size, size, 2, c);
+  }
+  
+}
