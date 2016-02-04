@@ -1,0 +1,48 @@
+public class Screen{
+ 
+  //creating variables for the screens location, size, and the size of the full map
+  int screenWidth, screenHeight, screenX, screenY;
+  int fieldWidth, fieldHeight;
+  
+  //setting the screen location, size, and field size
+  public Screen(int x, int y, int screenWidth, int screenHeight, int fieldWidth, int fieldHeight){
+    screenX = x;
+    screenY = y;
+    this.screenWidth = screenWidth;
+    this.screenHeight = screenHeight;
+    this.fieldWidth = fieldWidth;
+    this.fieldHeight = fieldHeight;
+  }
+  
+  public void update(Player player){
+    //updating the screen position to horizontally center the player
+    screenX = (int)player.x - screenWidth / 2;
+    //checking if the player is to close to the sides of the field, 
+    //and stopping the screen at the edge of the field if the player is close enough to it
+    if (screenX < 0)
+      screenX = 0;
+    else if (screenX + screenWidth > fieldWidth)
+      screenX = fieldWidth - screenWidth;
+    
+    //updating the screen position to vertically center the player
+    screenY = (int)player.y - screenHeight / 2;
+    //checking if the player is to close to the top/bottom of the field, 
+    //and stopping the screen at the top/bottom of the field if the player is close enough to it
+    if (screenY < 0)
+      screenY = 0;
+    else if (screenY + screenHeight > fieldHeight)
+      screenY = fieldHeight - screenHeight;
+  }
+  
+  public void render(float x, float y, float tWidth, float tHeight, int type, color c){
+    //setting the fill colour to the colour given in the argument
+    fill(c);
+    //checking the type of shape that is supposed to be drawn and drawing that shape at the given coordinates
+    if (type == 0)  //if type is 0, drawing a circle
+      ellipse(x - screenX, y - screenY, tWidth, tHeight);
+    else if (type == 1)  //if type is 1, drawing a rectangle
+      rect(x - screenX, y - screenY, tWidth, tHeight);
+    else if (type == 2)  //if type is 2, drawing a triangle
+      triangle(x - screenX, y - screenY, x - screenX + tWidth, y - screenY, x - screenX + tWidth / 2, y - screenY + tHeight);
+  }
+}
