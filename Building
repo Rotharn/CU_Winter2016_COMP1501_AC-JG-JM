@@ -1,0 +1,23 @@
+public class Building{
+  
+  float x, y, bWidth, bHeight;  //creating variables for the buildings location and dimensions
+  
+  //setting the buildings location and dimensions
+  public Building(float x, float y, float bWidth, float bHeight){
+    this.x = x;
+    this.y = y;
+    this.bWidth = bWidth;
+    this.bHeight = bHeight;
+  }
+  
+  public void update(){
+    
+  }
+  
+  //drawing the buildings using the screen class given in the argument
+  public void render(Screen screen){
+    color c = color(255, 255, 255);
+    screen.render(x, y, bWidth, bHeight, 1, c);
+  }
+  
+}
