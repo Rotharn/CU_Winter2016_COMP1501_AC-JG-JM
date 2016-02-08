@@ -69,38 +69,10 @@ void draw(){
   clear();
   
   if (gameState == 0) {  //making the background colour sky blue
-    
+    gCount = 0;
     background(0,100,220);
     //draw the ground at the bottom of the screen
     drawBACKGROUND();
-    //fill(0,200,0);
-    //rect(-5,height - height/100,width+5,height);
-    
-    //spawnRandom();  //spawning any new clouds or buildings
-    
-    ////drawing all the buildings
-    //fill(150);
-    //for (int i = 0; i < maxBuildings; i++){
-    //  bX[i]--;  //moving the buildings to the left
-    //  //image(imgBuilding, bX[i], bY[i], bWidth[i], bHeight[i]);  //use if using images
-    //  rect(bX[i], bY[i], bWidth[i], bHeight[i]);  //use if using rectangles
-    //}
-    
-    ////drawing all the clouds
-    //fill(255,255,255,200);
-    //noStroke();
-    //for (int i = 0; i < maxClouds; i++){
-    //  cX[i]--;  //moving the clouds left
-    //  //image(imgCloud, cX[i] - cWidth[i] / 2, cY[i], cWidth[i], cHeight[i]);  //use if using images
-    //  ellipse(cX[i], cY[i], cWidth[i], cHeight[i]);  //use if using circles
-    //}
-    //stroke(0);
-    
-    ////updating where in the arc the dragon is and drawing it
-    //dTimer += 0.05;
-    //fill(255,0,0);
-    ////image(imgDragon, width/2 - width / 15,dY - abs(sin(dTimer) * 20),width / 15,width / 15);  //use if using images
-    //ellipse(width/2,dY - abs(sin(dTimer) * 20),width / 30,width / 30);  //use if using curcles
     
     drawSTART();
   }
@@ -115,7 +87,7 @@ void draw(){
   }
   
   else if (gameState == 2) {
-    
+    gCount = 0;
     background(0,100,220);
     drawBACKGROUND();
     drawCREDITS();
