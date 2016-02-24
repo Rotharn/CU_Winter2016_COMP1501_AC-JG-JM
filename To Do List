@@ -1,0 +1,40 @@
+
+
+Movement:
+  projectile:
+    player
+      fire
+      ice
+      rock
+      magic
+    enemy
+      arrow
+      magic
+      
+  player(dragon)
+  player(head)
+  enemies(add specific)
+  
+units:
+  enemies:
+    ogre
+  player:
+  
+  buildings:
+    barracks
+    castle
+    house
+    hut
+    keep
+    magic tower
+    
+Environment:
+  background
+  
+  clouds
+  
+  props
+  
+Write up:
+  
+  
