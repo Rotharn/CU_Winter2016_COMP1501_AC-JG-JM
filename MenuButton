@@ -1,0 +1,32 @@
+public class MenuButton {
+  //PImage imgStartButton;
+  int x, y, h, w;
+  int command;
+  String msg;
+  
+  public MenuButton (int x, int y, int w, int h, int command, String msg) {
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+    this.command = command;
+    this.msg = msg;
+  }
+  
+  //If a button is found clicked, this function determines what to do.
+  public int clicked() {
+    return command;
+  }
+  
+  //Displays the buttons graphically for the player.
+  void display() {
+    fill(255);
+    rect(x,y,w,h,7);
+    fill(0);
+    rect(x+5, y+5, w-10, h-10, 7);
+    fill(255);
+    
+    textSize(30);
+    text(msg, x + 15, y + (h - 15));
+  }
+}
