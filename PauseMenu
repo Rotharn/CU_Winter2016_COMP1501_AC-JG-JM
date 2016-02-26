@@ -1,0 +1,32 @@
+public class PauseMenu{
+ 
+  MenuButton[] menuButtons;
+  
+  public PauseMenu(){
+    menuButtons = new MenuButton[2];
+    menuButtons[0] = new MenuButton((width/5), (height/10)*3 +40, (width/5 *3), 70, 0, "Resume");
+    menuButtons[1] = new MenuButton((width/5), (height/10)*5 +20, (width/5 *3), 70, 1, "Quit to Menu");
+  }
+  
+  //updating the pause menu
+  public int update(boolean click){
+    int command = -1;
+    
+    //checking if any buttons where clicked and getting their command number is they were clicked
+    if (click){
+      for (int i = 0; i < menuButtons.length; i++) {
+         if (mouseX > menuButtons[i].x && mouseX < (menuButtons[i].x + menuButtons[i].w) &&
+             mouseY > menuButtons[i].y && mouseY < (menuButtons[i].y + menuButtons[i].h)) 
+           command = menuButtons[i].clicked();
+      }
+    }
+    
+    //drawing the buttons
+    for (int i = 0; i < menuButtons.length; i++) {
+      menuButtons[i].display();
+    }
+    
+    return command;  //returning any commands the pause menu needs done
+  }
+  
+}
