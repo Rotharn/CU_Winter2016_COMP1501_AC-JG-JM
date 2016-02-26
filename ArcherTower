@@ -1,0 +1,14 @@
+public class ArcherTower extends Building{
+ 
+  //setting the buildings location and dimensions
+  public ArcherTower(float x, float y, float w, float h){
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+    health = 20;
+    fireType = new Arrow(0,0,0,0,0);
+    img = loadImage("house.png");
+  }
+  
+}
