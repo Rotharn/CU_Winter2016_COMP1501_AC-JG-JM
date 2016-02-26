@@ -1,0 +1,151 @@
+public class Game{
+ 
+  //creating a player variable for the player to control, along with a fireball for the player to use
+  Dragon player;
+  ArrayList<Projectile> fires = new ArrayList<Projectile>();
+  
+  //creating an array of building variables to hold the data for the buildings, along with an arrow for the buildings to fire 
+  ArrayList<Building> building = new ArrayList<Building>();
+  ArrayList<Projectile> arrows = new ArrayList<Projectile>();
+  ArrayList<TownUnit> units = new ArrayList<TownUnit>();
+  
+  //creating a screen variable to draw everything with and a vaariable for the dimensions of the field
+  Screen screen;
+  int fieldHieght, fieldWidth, floor;
+  
+  public Game(){
+    //setting the screen size and setting the field dimensions
+    fieldWidth = width * 2;
+    fieldHieght = height * 2;
+    floor = fieldHieght - 200;
+    
+    //declaring the player variable
+    player = new Dragon(width/2, height/2, 40);
+    
+    //declaring and creating 4 buildings
+    for (int i = 0; i < 4; i++){
+      if (i % 2 == 0)
+        building.add(new ArcherTower(i * width / 2 + 50, fieldHieght - 100, 200, 100));
+      else if (i % 2 == 1)
+        building.add(new WizardTower(i * width / 2 + 50, fieldHieght - 100, 200, 100));
+    }
+    
+    //creating the screen class
+    screen = new Screen(0, 0, width, height, fieldWidth, fieldHieght);
+  }
+  
+  public int update(){
+    clear();
+    int command = updateGame();
+    collisions();
+    return command;
+  }
+  
+  private int updateGame(){
+    int command = -1;
+    player.update(keys, floor);  //updating the player
+    if (player.isRemoved())  //checking if the player is removed and setting the return command to 0 if true
+      command = 0;
+    
+    //updating all the buildings
+    for (int i = 0; i < building.size(); i++){
+      building.get(i).update(player);
+      
+      if (building.get(i).Attack())  //checking if the building attacked and getting a new arrow from the building if true
+        arrows.add(building.get(i).newArrow(player));
+      
+      //removing the building if it's remove variable is true
+      if (building.get(i).isRemoved()){
+        building.remove(i);
+        i--;
+      }
+    }
+    
+    if (player.Attack())  //checking whether to make a new fireball attack
+      fires.add(player.newAttack());
+    //updating all the dragons attacks
+    for (int i = 0; i < fires.size(); i++){
+      fires.get(i).update();  
+      
+      //removing the attack if it's remove variable is true
+      if (fires.get(i).isRemoved()){
+        fires.remove(i);
+        i--;
+      }
+    }
+    
+    //updating all the building attacks
+    for (int i = 0; i < arrows.size(); i++){
+      arrows.get(i).update(); 
+      
+      //removing the attack if it's remove variable is true
+      if (arrows.get(i).isRemoved()){
+        arrows.remove(i);
+        i--;
+      }
+    }
+    
+    //updating all the towns units
+    for (int i = 0; i < units.size(); i++){
+      units.get(i).update(player); 
+      
+      //removing the unit if it's remove variable is true
+      if (units.get(i).isRemoved()){
+        units.remove(i);
+        i--;
+      }
+    }
+    
+    return command;  //returning any commands the game needs done
+  }
+  
+  private void collisions(){
+    //checking all the dragon's attacks and building for collisions and running their code for when hit if any collisions are found
+    for (int i = 0; i < fires.size(); i++){
+      for (int j = 0; j < building.size(); j++){
+        if (fires.get(i).collide(building.get(j))){
+          building.get(j).hit(fires.get(i));
+          fires.get(i).hit();
+        }
+      }
+    }
+    
+    //checking all the town's attacks and player for collisions and running their code for when hit if any collisions are found
+    for (int i = 0; i < arrows.size(); i++){
+      if (arrows.get(i).collide(player)){
+        player.hit(arrows.get(i));
+        arrows.get(i).hit();
+      }
+    }
+  }
+  
+  public void render(){
+    pushMatrix();
+    screen.update(player);  //updating the screen to display the correct amount of the screen
+    
+    background(0,100,220);  //making the background colour sky blue and drawing the ground
+    screen.render(1, color(0,200,0),screen.fieldWidth/2,screen.fieldHeight - 25,screen.fieldWidth+5,screen.fieldHeight/25, 0);
+    
+    //drawing all the buildings
+    for (int i = 0; i < building.size(); i++)
+      building.get(i).render(screen);
+      
+    player.render(screen);  //drawing the player
+    
+    //drawing all the dragon's attacks
+    for (int i = 0; i < fires.size(); i++)
+      fires.get(i).render(screen);
+      
+    //drawing all the town's attacks
+    for (int i = 0; i < arrows.size(); i++)
+      arrows.get(i).render(screen);
+    
+    //drawing all the town's units
+    for (int i = 0; i < units.size(); i++)
+      units.get(i).render(screen);
+      
+    popMatrix();  //reseting the matrix to before it was all rescaled and translated
+    
+    player.renderHUD(screen);  //drawing the players HUD
+  }
+}
