@@ -1,0 +1,21 @@
+public class WizardFire extends Projectile{
+  
+  //initilizing all the projectile variables to what they need to be for an arrow
+  public WizardFire(float x, float y, float w, float h, float dir){
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+    this.dir = dir;
+    range = 120;
+    speed = 5;
+    damage = 3;
+    img = loadImage("projectile.png");
+  }
+  
+  //returning a wizard fire projectile 
+  public Projectile newProjectile(float x, float y, float w, float h, float dir){
+    return new WizardFire(x, y, w, h, dir);
+  }
+  
+}
