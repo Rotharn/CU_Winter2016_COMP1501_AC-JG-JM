@@ -1,0 +1,19 @@
+public class DragonFire extends Projectile{
+  
+  //initilizing all the projectile variables to what they need to be for a dragon's fireball
+  public DragonFire(float x, float y, float w, float h, float dir){
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+    this.dir = dir;
+    range = 120;
+    speed = 5;
+    img = loadImage("projectile.png");
+  }
+    
+  public Projectile newProjectile(float x, float y, float w, float h, float dir){
+    return new Arrow(x, y, w, h, dir);
+  }
+  
+}
