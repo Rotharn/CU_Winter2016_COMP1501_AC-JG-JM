@@ -1,0 +1,45 @@
+public abstract class Entity{
+ 
+  //delcaring all the variables every entity is going to need
+  private boolean removed = false;
+  protected float x, y, w, h, r = 0;
+  protected PImage img;
+  
+  public void update(){}
+  
+  //setting remove to true from outside of the entity class
+  public void Remove(){
+   removed = true; 
+  }
+  
+  //checking if the entity is removed
+  public boolean isRemoved(){
+   return removed; 
+  }
+  
+  //rendering the entity
+  public void render(Screen screen){
+    screen.render(img, x, y, w, h, r);
+  }
+  
+  //getting the x of the entity
+  public float getX(){
+    return x;
+  }
+  
+  //getting the y of the entity
+  public float getY(){
+    return y;
+  }
+  
+  //getting the width of the entity
+  public float getWidth(){
+    return w;
+  }
+  
+  //getting the height of the entity
+  public float getHeight(){
+    return h;
+  }
+  
+}
