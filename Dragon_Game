@@ -1,0 +1,97 @@
+boolean[] keys = new boolean[6];  //creating a boolean array to hold if the control keys are being pressed
+
+//creating variable for each class that different parts of the game run from
+IntroScreen intro;
+Game game;
+PauseMenu pauseMenu;
+
+//creating variable to control the current game state
+int INTROSCREEN = 0,  PLAYING = 1, PAUSE = 2;
+int GameState =  INTROSCREEN;
+
+void setup(){
+  //setting the screen size and framerate
+  size(600,600);
+  frameRate(60);
+  
+  intro = new IntroScreen();  //initializing the introscreen
+}
+
+void draw(){
+  clear();
+  
+  int command = -1;//creating a variable to get any commands the various game class may need to happen
+  if (GameState == INTROSCREEN){  //running the code for the main menu
+    command = intro.update(keys[4]);  //updating the introscreen and getting any commands the player made on it
+    
+    if (command == 0){  //starting the game if the player selected that choice
+       game = new Game();
+       GameState = PLAYING;
+    }
+    else if (command == 3)  //exiting the game if the player chose it
+      exit();
+  }
+  else if (GameState == PLAYING){  //running the code for the main game
+    command = game.update();  //updating the main game and getting any commands the player made on it
+    game.render();  //drawing the main game
+    
+    if (keys[5]){  //opening the pause menu if the play wants to pause the game
+      pauseMenu = new PauseMenu();
+      GameState = PAUSE;
+    }
+    
+    if (command == 0){  //returning the player to the main menu if the game return 0
+      intro = new IntroScreen();
+      GameState = INTROSCREEN;
+    }
+  }
+  else if (GameState == PAUSE){  //running the code for the pause menu
+    game.render();  //drawing the main game in the background
+    command = pauseMenu.update(keys[4]);  //updating the pause and getting any commands the player made on it
+    
+    if (command == 0)  //resuming the game if the player selected it on the pause menu
+      GameState = PLAYING;
+    else if (command == 1){  //returning to the main menu if the player selected it on the pause menu
+      intro = new IntroScreen();
+      GameState = INTROSCREEN; 
+    }
+  }
+}
+
+
+/*------------------------------------------------Input-------------------------------------------------*/
+//checking which key is pressed and telling the keys variable that it is pressed
+void keyPressed(){
+  if (key == 'w')
+    keys[0] = true;
+  if (key == 'd')
+    keys[1] = true;
+  if (key == 's')
+    keys[2] = true;
+  if (key == 'a')
+    keys[3] = true;
+  if (key == 'p')
+    keys[5] = true;
+}
+
+//checking which key is released and telling the keys variable that it is released
+void keyReleased(){
+  if (key == 'w')
+    keys[0] = false;
+  if (key == 'd')
+    keys[1] = false;
+  if (key == 's')
+    keys[2] = false;
+  if (key == 'a')
+    keys[3] = false;
+  if (key == 'p')
+    keys[5] = false;
+}
+
+void mousePressed(){
+  keys[4] = true; 
+}
+
+void mouseReleased(){
+  keys[4] = false; 
+}
