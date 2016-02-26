@@ -1,0 +1,23 @@
+public class TownUnit extends Unit{
+  
+  public TownUnit(float x, float y, float w, float h){
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+    
+    maxHealth = 5;
+    health = 5;
+  }
+  
+  //updating the town unit
+  public void update(Dragon dragon){
+    //moving the unit toward the dragon
+    if (dragon.x < x)
+      x -= 2;
+    else if (dragon.x > x)
+      x += 2;
+    
+  }
+  
+}
