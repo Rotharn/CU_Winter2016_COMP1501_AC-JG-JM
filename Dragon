@@ -1,55 +1,92 @@
-boolean[] keys = new boolean[4];
-
-Player player;
-Building[] building;
-Screen screen;
-int fieldHieght, fieldWidth;
-int humanHeight = 10;
-char letter = 'a';
-
-void setup(){
-  size(600,600);
-  fieldWidth = width * 2;
-  fieldHieght = height + 100;
+public class Dragon extends Unit{
+ 
+  float dir, speed = 3;  //creating variables for the players location, dimensions, and direction, and speed
+  float vx, vy;
+  int coolDown = 0;
   
-  player = new Player(width/2, height/2, 20);
+  //setting the players location and dimensions
+  public Dragon(float x, float y, float size){
+    this.x = x;
+    this.y = y;
+    this.w = size;
+    this.h = size;
+    img = loadImage("Dragon.png");
+    
+    maxHealth = 60;
+    health = maxHealth;
+  }
   
-  building = new Building[4];
-  for (int i = 0; i < building.length; i++)
-    building[i] = new Building(i * 250, fieldHieght - 100, 200, 100);
+  public void update(boolean[] keys, float lowestPoint){
+    if (keys[1] && vx < speed)  //if d is pressed increase speed to the right
+      vx+=0.1;
+    else if (keys[3] && vx > -speed)  //if a is pressed increase speed to the left
+      vx-=0.1;
+    else {
+      //slowing down and stopping the dragon if a button isn't pressed
+      if (vx > -.1 && vx < .1)
+        vx = 0;
+      else if (vx < 0)
+        vx += 0.1;
+      else if (vx > 0)
+        vx -= 0.1;
+    }
+    
+    if (keys[0] && vy > -speed)  //if w is pressed speed increased up
+      vy-=0.1;
+    else if (keys[2] && vy < speed)  //if d is pressed speed increased down
+      vy+=0.1;
+    else {
+      //stopping the dragon if a button isn't pressed
+      if (vy > 0 && vy < .2)
+        vx = 0.1;
+      else if (vy < .1)
+        vy += 0.1;
+      else if (vy > .1)
+        vy -= 0.1;
+    }
+    
+    //updating the players location
+    x += vx;
+    y += vy;
   
-  screen = new Screen(0, 0, width, height, fieldWidth, fieldHieght);
-}
-
-void draw(){
-  clear();
-
-  player.update(keys);
-  screen.update(player);
+    if (y > lowestPoint){  //stopping the dragons from going below a certain point
+      vy = 0;
+      y = lowestPoint;
+    }
+    
+    //checking if the player is pressing the attack key
+    if (keys[4])
+      attack = true;
+    else attack = false;
+    if (coolDown > 0)  //reducing the players cooldown between attakcs
+      coolDown--;
+    
+    //checking if the player is out of health and removing them if they are
+    if (health <= 0)
+      Remove();
+  }
   
-  for (int i = 0; i < building.length; i++)
-    building[i].render(screen);
-  player.render(screen);
-}
-
-void keyPressed(){
-  if (key == 'w')
-    keys[0] = true;
-  if (key == 'd')
-    keys[1] = true;
-  if (key == 's')
-    keys[2] = true;
-  if (key == 'a')
-    keys[3] = true;
-}
-
-void keyReleased(){
-  if (key == 'w')
-    keys[0] = false;
-  if (key == 'd')
-    keys[1] = false;
-  if (key == 's')
-    keys[2] = false;
-  if (key == 'a')
-    keys[3] = false;
+  //creating a new attack from the dragon
+  public Projectile newAttack(){
+    //firing toward the mouse in relation to the middle of the screen
+    float dir = atan((mouseY - 300.) / (mouseX - 300.));
+    if (mouseX - 300 < 0)
+      dir += PI;
+    //creating, returning the dragons attack, and setting the players cooldown
+    Projectile attack = new DragonFire(x, y, 10, 10, dir);
+    coolDown = 2;
+    return attack;
+  }
+  
+  //rendering the player for the intro screen
+  public void introRender(Screen screen, float y){
+    screen.render(img, x, y, w, h, r);
+  }
+  
+  //rendering the players HUD
+  public void renderHUD(Screen screen){
+    screen.render(1, color(0), width - 50, 20, 80, 20, 0);
+    screen.render(1, color(200, 0, 0), width - 10 - 40 * ((float)health / (float)maxHealth), 20, 80 * ((float)health / (float)maxHealth), 20, 0);
+  }
+  
 }
