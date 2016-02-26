@@ -1,0 +1,66 @@
+public class Screen{
+ 
+  //creating variables for the screens location, size, and the size of the full map
+  int screenWidth, screenHeight, screenX, screenY;
+  int fieldWidth, fieldHeight;
+  float scale = 1;
+  
+  //setting the screen location, size, and field size
+  public Screen(int x, int y, int screenWidth, int screenHeight, int fieldWidth, int fieldHeight){
+    screenX = x;
+    screenY = y;
+    this.screenWidth = screenWidth;
+    this.screenHeight = screenHeight;
+    this.fieldWidth = fieldWidth;
+    this.fieldHeight = fieldHeight;
+  }
+  
+  public void update(Dragon player){
+    //figuring out the scale of the screen and stopping it after a crertain point
+    scale = screenHeight / (fieldHeight - player.y + screenHeight / 2);
+    if (scale > 1)
+      scale = 1;
+    else if (scale < (float)screenHeight / (float)fieldHeight)
+      scale = (float)screenHeight / (float)fieldHeight;
+    scale(scale);
+    
+    //finding the corners of the screen and applying a translation to those points
+    screenX = (int)(player.x - screenWidth / 2 / scale);
+    if (screenX < 0)
+      screenX = 0;
+    else if (screenX + screenWidth / scale > fieldWidth)
+      screenX = (int)(fieldWidth - screenWidth / scale);
+    
+    screenY = (int)(player.y - screenHeight / 2);
+    if (screenY < 0)
+      screenY = 0;
+    else if (screenY + screenHeight > fieldHeight)
+      screenY = (int)(fieldHeight - screenHeight);
+    translate(-screenX, -screenY);
+  }
+  
+  public void render(int type, color c, float x, float y, float tWidth, float tHeight, float r){
+    //setting the fill colour to the colour given in the argument
+    fill(c);
+    translate(x ,y);
+    rotate(r);
+    //checking the type of shape that is supposed to be drawn and drawing that shape at the given coordinates
+    if (type == 0)  //if type is 0, drawing a circle
+      ellipse(0,0, tWidth, tHeight);
+    else if (type == 1)  //if type is 1, drawing a rectangle
+      rect(-tWidth / 2,-tHeight / 2, tWidth, tHeight);
+    else if (type == 2)  //if type is 2, drawing a triangle
+      triangle(0,-tHeight / 2, tWidth / 2, tHeight / 2, -tWidth / 2, tHeight / 2);    
+    rotate(-r);  
+    translate(-x ,-y);
+  }
+  
+  //draws an img on screen at the given x, y with the given width and height and with any required rotation
+  public void render(PImage img, float x, float y, float w, float h, float r){
+    translate(x ,y);
+    rotate(r);
+    image(img, -w/2, -h/2, w, h);
+    rotate(-r);  
+    translate(-x ,-y);
+  }
+}
