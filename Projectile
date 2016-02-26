@@ -1,0 +1,40 @@
+public abstract class Projectile extends Entity{
+ 
+  //creating any variables all projectile attakcs will need
+  protected float dir, speed;
+  protected int range, disTraveled, damage = 1;
+  
+  //a base update method that should work for any projectile
+  public void update(){
+    //checking how far the projectile has traveled and removing if it's out of range
+    disTraveled++;
+    if (range < disTraveled)
+      Remove();
+    
+    //updating the projectiles position
+    x += cos(dir) * speed;
+    y += sin(dir) * speed;
+  }
+  
+  //removing the projectile if hit
+  public void hit(){
+    Remove();
+  }
+  
+  //getting the damage the projectile causes
+  public int getDamage(){
+    return damage; 
+  }
+  
+  //checking if the projectile collided with a given unit
+  public boolean collide(Unit unit){
+    if (unit.getX() + unit.getWidth()/2 > x - w/2 && unit.getX() - unit.getWidth()/2 < x + w/2 &&
+        unit.getY() + unit.getHeight()/2 > y - h/2 && unit.getY() - unit.getHeight()/2 < y + h/2)
+        return true;
+    return false;
+  }
+  
+  //making every projectile subclass have a class that will return a new copie of whatever that projectile is
+  public abstract Projectile newProjectile(float x, float y, float w, float h, float dir);
+  
+}
