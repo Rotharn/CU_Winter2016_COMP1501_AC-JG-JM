@@ -1,0 +1,38 @@
+public abstract class Building extends Unit{
+  
+  protected Projectile fireType;
+  
+  //updating the building for the main game
+  public void update(Dragon player){
+    //checking if the building is ready to fire and if the player is in a possition it can fire at
+    attack = false;
+    if (coolDown <= 0){
+      if (player.y < y)
+        attack = true;
+    }
+    else coolDown--;
+    
+    //checking if the building is out of health and removing it if it is
+    if (health <= 0)
+      Remove();
+  }
+  
+  //updating the building for the intro screen
+  public void introUpdate(){
+    x--; 
+  }
+  
+  //creating a new arrow flying at the player
+  public Projectile newArrow(Dragon player){
+    //setting the direction of the arrow toward the player
+    float dir = atan((player.y - y) / (player.x - x));
+    if (player.x < x)
+      dir += PI;
+    
+    //creating, returning the new arrow, and setting the cooldown before the building can fire again
+    Projectile arrow = fireType.newProjectile(x, y, 10, 10, dir);
+    coolDown = 120;
+    return arrow;
+  }
+  
+}
