@@ -1,0 +1,153 @@
+public class IntroScreen{
+  
+  Screen screen;
+   
+  int bTimer = 0;  //creating timer variables to track when to make a new building
+  int maxBuildings = 10, curBuilding = 0;  //defining what the mas number of buildings there can be and which is the next to be made
+  Building[] buildings;  //making arrays to hold the x, y, width, and height of each building
+  
+  int dY;  //creating a variable to hold the y position of the dragon
+  float dTimer = 0;  //creates a variable to time what part of the dragon's arc the dragon is at
+  
+  //creating image variables to hold the images for the dragon, building, and cloud
+  Dragon dragon;
+  
+  int fCredits = 0;
+  int fCredits2 = 0;
+  int gCount =0;
+  
+  int MenuState = 0;
+  
+  MenuButton[] menuButtons;
+  PImage imgTitle;
+  String version = " v0.1.0";
+  
+  public IntroScreen(){
+    screen = new Screen(0, 0, width, height, width, height);
+    
+    dY = height / 4;  //setting the dragon height at a fourth of the screen
+    dragon = new Dragon(width/2, dY, 40);
+    
+    //initilizing the building location/size and image variables
+    buildings = new Building[maxBuildings];
+    for (int i = 0; i < buildings.length; i++)
+      buildings[i] = new WizardTower(0,0,0,0);
+      
+    menuButtons = new MenuButton[4];
+    menuButtons[0] = new MenuButton((width/5), (height/10)*3 +40, (width/5 *3), 70, 0, "Start Dragon Game");
+    menuButtons[1] = new MenuButton((width/5), (height/10)*5 +20, (width/5 *3), 70, 1, "Start (PlaceHolder)");
+    menuButtons[2] = new MenuButton((width/5), (height/10)*7, (width/5 *3), 70, 2, "Credits");
+    menuButtons[3] = new MenuButton((width/5), (height/10)*9 - 20, (width/5 *3), 70, 3, "Exit");
+    
+    imgTitle = loadImage("Title.png");
+  }
+  
+  public int update(boolean click){
+    int command = -1;
+    if (MenuState == 0){  //drawing the backgroung and main menu and checking for any commands from the player
+      drawBackground();
+      command = menu(click);
+    }
+    else if (MenuState == 1){  //drawing the background and credits
+      drawBackground();
+      drawCREDITS();
+    }
+    return command;  //returning any commands the player may have selected
+  }
+  
+  private int menu(boolean click){
+    textSize(20);
+    fill(255);  //drawing teh game logo and version number
+    image(imgTitle, width/6 + 5, height/10); //use if using images  
+    text(version, width/6 + 10, height/10 *2 + 12);
+     // text("Dragon Lore" + version, 50, 50);
+    textSize(30); 
+    
+    //checking if any buttons where pressed and getting the command numbers if they were
+    int command = -1;
+    if (click){
+      for (int i = 0; i < menuButtons.length; i++) {
+         if (mouseX > menuButtons[i].x && mouseX < (menuButtons[i].x + menuButtons[i].w) &&
+             mouseY > menuButtons[i].y && mouseY < (menuButtons[i].y + menuButtons[i].h)) 
+           command = menuButtons[i].clicked();
+      }
+    }
+    
+    if (command == 2)  //changing teh menu state to display the credits if that button was pressed
+      MenuState = 1;
+    
+    //drawing all the menu buttons
+    for (int i = 0; i < menuButtons.length; i++) {
+      menuButtons[i].display();
+    }
+    
+    return command;  //returning any commands the player may have selected
+  }
+  
+  private void drawBackground(){
+    background(0,100,220);  //making the background colour sky blue
+    
+    //draw the ground at the bottom of the screen
+    fill(0,200,0);
+    rect(-5,height - height/100,width+5,height);
+    
+    spawnRandom();  //spawning any new clouds or buildings
+    
+    //drawing all the buildings
+    for (int i = 0; i < maxBuildings; i++){
+      buildings[i].introUpdate();
+      buildings[i].render(screen);
+    }
+    
+    //updating where in the arc the dragon is and drawing it
+    dTimer += 0.05;
+    dragon.introRender(screen, dY - abs(sin(dTimer) * 20));
+  }
+  
+  private void spawnRandom() {
+    bTimer--;  //adding 1 to the building spawn timer
+    if (bTimer <= 0){  //checking if it's time to make a new building
+      bTimer = (int)random(60, 180);  //reseting the building spawn timer to a semi random time
+      int newHeight = 85;
+      int newWidth = 100;
+      
+      //setting the coordinates and dimensions of the new building
+      int type = (int)floor(random(0, 2));
+      if (type == 0)
+        buildings[curBuilding] = new WizardTower(width + newWidth * 2, height - newHeight/2-height/100, newWidth, newHeight);
+      else if (type == 1)
+        buildings[curBuilding] = new ArcherTower(width + newWidth * 2, height - newHeight/2-height/100, newWidth, newHeight);
+      
+      //moving the curBuilding vaiable to the next building and reseting it if nessesary
+      curBuilding++;
+      if (curBuilding >= maxBuildings)
+        curBuilding = 0;
+    }
+  }
+  
+  //drawing the credits on screen
+  private void drawCREDITS() {
+    fill(0);
+    if (fCredits < (height -35))  //moving the credits up from the bottom of the screen
+      fCredits++;
+    textSize(30);
+    text("Design and Programing by:",5,(height - fCredits));
+    text("Ante Cavar",5, ((height + 35) -fCredits));
+    text("Jacob Martin",5, ((height + 70) -fCredits));
+    text("Julian Greppin",5, ((height + 105) -fCredits));
+    
+    text("Additional Assets, References",5,(height + 175 - fCredits));
+    text("and Special Considerations:", 5, (height + 210) - fCredits);
+    textSize(20);
+    text("Cup and Talon font by S. John Ross",5,(height + 235 - fCredits));
+    text("Derpy Dragon Sprite by Mind Juice Media Inc",5,(height + 255 - fCredits));
+    text("Cloud Sprite from cliparts.co",5,(height + 275 - fCredits));
+    text("Castle Sprite from clipartlord.com",5,(height + 295 - fCredits));
+    
+    if (fCredits == (height - 35))  //timing how long before going back to the main menu
+      fCredits2++;
+    if (fCredits2 >= 60)  //going bakc to the main menu after 60 frames have been counted
+      MenuState = 0;
+  }
+
+}
