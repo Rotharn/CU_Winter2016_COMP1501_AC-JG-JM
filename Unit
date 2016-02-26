@@ -1,0 +1,17 @@
+public abstract class Unit extends Entity{
+  
+  //creating any variables all units will need
+  protected int health, maxHealth, coolDown; 
+  protected boolean attack;
+  
+  //making a method to check if the unit can attack yet
+  public boolean Attack(){
+     return (coolDown <= 0 && attack);
+  }
+  
+  //taking off health based on the damage out put of a projectile the unit is hit by
+  public void hit(Projectile projectile){
+    health -= projectile.getDamage();
+  }
+  
+}
