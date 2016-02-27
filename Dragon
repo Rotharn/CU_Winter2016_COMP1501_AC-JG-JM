@@ -38,7 +38,7 @@ public class Dragon extends Unit{
     else {
       //stopping the dragon if a button isn't pressed
       if (vy > 0 && vy < .2)
-        vx = 0.1;
+        vy = 0.1;
       else if (vy < .1)
         vy += 0.1;
       else if (vy > .1)
