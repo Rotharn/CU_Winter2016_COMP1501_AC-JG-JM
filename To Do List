@@ -9,7 +9,7 @@ Movement:
       magic
     enemy
       arrow
-      magic
+      magic - Julian
       
   player(dragon)
   player(head)
@@ -26,7 +26,7 @@ units:
     house
     hut
     keep
-    magic tower
+    magic tower - Julian
     
 Environment:
   background
