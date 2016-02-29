@@ -67,14 +67,20 @@ public class Dragon extends Unit{
   }
   
   //creating a new attack from the dragon
-  public Projectile newAttack(){
+  //goes on line 66 of Game  fires.add(player.newAttack(screen.screenX, screen.screenY, screen.scale));
+  public Projectile newAttack(float ScreenX, float ScreenY, float scale){
     //firing toward the mouse in relation to the middle of the screen
-    float dir = atan((mouseY - 300.) / (mouseX - 300.));
-    if (mouseX - 300 < 0)
+    float magY = abs(mouseY - (y - ScreenY) * scale);
+    float magX = abs(mouseX - (x - ScreenX) * scale);
+    float tempY = random(-(magY/4), (magY/4));
+    float tempX = random(-(magX/4), (magX/4));
+    float dir = atan((mouseY+tempY - magY) / (mouseX+tempX - magX));
+    if (mouseX+tempX - magX < 0)
       dir += PI;
     //creating, returning the dragons attack, and setting the players cooldown
     Projectile attack = new DragonFire(x, y, 10, 10, dir);
     coolDown = 2;
+    power = power - 10;
     return attack;
   }
   
