@@ -6,7 +6,7 @@
     float tempX = random(-(magX/4), (magX/4));
     println(tempX+", "+mouseY+"||"+tempY+", "+mouseX);
     float dir = atan((mouseY+tempX - 300.) / (mouseX+tempY - 300.));
-    if (mouseX - 300 < 0)
+    if (mouseX+tempY - 300 < 0)
       dir += PI;
     //creating, returning the dragons attack, and setting the players cooldown
     Projectile attack = new DragonFire(x, y, 10, 10, dir);
