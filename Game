@@ -62,7 +62,7 @@ public class Game{
     }
     
     if (player.Attack())  //checking whether to make a new fireball attack
-      fires.add(player.newAttack());
+      fires.add(player.newAttack(screen.screenX, screen.screenY, screen.scale));
     //updating all the dragons attacks
     for (int i = 0; i < fires.size(); i++){
       fires.get(i).update();  
