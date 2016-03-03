@@ -6,31 +6,57 @@ public class Game{
   ArrayList<Projectile> rocks = new ArrayList<Projectile>();
   ArrayList<Projectile> pillars = new ArrayList<Projectile>();
   
-  //creating an array of building variables to hold the data for the buildings, along with an arrow for the buildings to fire 
+  //creating an array of building variables to hold the data for the buildings, along wrrow for the buildings to fire 
   ArrayList<Building> building = new ArrayList<Building>();
   ArrayList<Projectile> arrows = new ArrayList<Projectile>();
   ArrayList<TownUnit> units = new ArrayList<TownUnit>();
-  
   //creating a screen variable to draw everything with and a vaariable for the dimensions of the field
   Screen screen;
   int fieldHieght, fieldWidth, floor;
   
   public Game(){
     //setting the screen size and setting the field dimensions
-    fieldWidth = width * 2;
-    fieldHieght = height * 2;
+    fieldWidth = (int)(width * 2);
+    fieldHieght = (int)(height * 1.5);
     floor = fieldHieght - 200;
     
     //declaring the player variable
     player = new Dragon(width/2, height/2, 40);
     
     //declaring and creating 4 buildings
-    for (int i = 0; i < 4; i++){
-      if (i % 2 == 0)
-        building.add(new ArcherTower(i * width / 2 + 50, fieldHieght - 100, 200, 100));
-      else if (i % 2 == 1)
-        building.add(new WizardTower(i * width / 2 + 50, fieldHieght - 100, 200, 100));
+    int x = (int)random(0,80);
+    while(x < fieldWidth - 100){
+      int newBuilding = (int)random(3);
+      if (newBuilding == 0){
+        building.add(new ArcherTower(x + 100, fieldHieght - fieldHieght/25 - 50, 200, 100));
+        x += 200;
+      }
+      else if (newBuilding == 1){
+        building.add(new WizardTower(x + 50, fieldHieght - fieldHieght/25 - 50, 100, 100));
+        x += 100;
+      }
+      else if (newBuilding == 2){
+        building.add(new Barracks(x + 100, fieldHieght - fieldHieght/25 - 50, 200, 100));
+        x += 200;
+      }
+      x +=(int)random(20,80);
     }
+    
+    fieldWidth = fieldWidth - (fieldWidth - x) + (int)random(0,80);
+    //creating the screen class
+    screen = new Screen(0, 0, width, height, fieldWidth, fieldHieght);
+  }
+  
+  public Game(ArrayList<Building> buildings, int fieldWidth, int fieldHeight){
+    //setting the screen size and setting the field dimensions
+    this.fieldWidth = fieldWidth;
+    this.fieldHieght = fieldHeight;
+    floor = fieldHieght - 200;
+    
+    //declaring the player variable
+    player = new Dragon(width/2, height/2, 40);
+    
+    this.building = new ArrayList<Building>(buildings);
     
     //creating the screen class
     screen = new Screen(0, 0, width, height, fieldWidth, fieldHieght);
@@ -53,8 +79,12 @@ public class Game{
     for (int i = 0; i < building.size(); i++){
       building.get(i).update(player);
       
-      if (building.get(i).Attack())  //checking if the building attacked and getting a new arrow from the building if true
-        arrows.add(building.get(i).newArrow(player));
+      if (building.get(i).Attack()){  //checking if the building attacked and getting a new arrow from the building if true
+        if (building.get(i).makeProjectile())
+          arrows.add(building.get(i).newArrow(player));
+        else 
+          units.add(building.get(i).newUnit()); }
+      
       
       //removing the building if it's remove variable is true
       if (building.get(i).isRemoved()){
@@ -64,10 +94,11 @@ public class Game{
     }
     
     
+    
     if (player.Attack())  //checking whether to make a new fireball attack
-      fires.add(player.newAttack((byte)0));
+      fires.add(player.newAttack(screen.screenX, screen.screenY, screen.scale, 0));
     if (player.Attack2())
-      rocks.add(player.newAttack((byte)1));
+      rocks.add(player.newAttack(screen.screenX, screen.screenY, screen.scale, 1));
       
       
     //updating all the dragons attacks
@@ -143,9 +174,18 @@ public class Game{
       }
     }
     
+    for (int i = 0; i < fires.size(); i++){
+      for (int j = 0; j < units.size(); j++){
+        if (fires.get(i).collide(building.get(j))){
+          building.get(j).hit(fires.get(i));
+          fires.get(i).hit();
+        }
+      }
+    }
+    
     for (int i = 0; i < rocks.size(); i++){
-     if (rocks.get(i).y > 1150){       
-      pillars.add(new DragonPillar(rocks.get(i).x, 1200, 50, 50,asin(1)));
+     if (rocks.get(i).y > fieldHieght - fieldHieght/25){       
+      pillars.add(new DragonPillar(rocks.get(i).x, fieldHieght - fieldHieght/25 + 25, 50, 50));
       rocks.get(i).hit();
      }
     }
@@ -154,11 +194,28 @@ public class Game{
       for (int j = 0; j < building.size(); j++){
         if (pillars.get(i).collide(building.get(j))){
           building.get(j).hit(pillars.get(i));
-          pillars.get(i).pillar();
+          pillars.get(i).hit();
         }
       }
     }
-    
+      
+    for (int i = 0; i < pillars.size(); i++){
+      for (int j = 0; j < units.size(); j++){
+        if (pillars.get(i).collide(units.get(j))){
+          units.get(j).hit(pillars.get(i));
+          pillars.get(i).hit();
+        }
+      }
+    }
+      
+      //for (int j = 0; j < units.size(); j++){
+      //  if (pillars.get(i).collide(units.get(j))){
+      //    units.get(j).hit(pillars.get(i));
+      //    pillars.get(i).hit();
+      //  }
+      //}
+    //}
+//    
    //for (int i = 0; i < rocks.size(); i++){
    //   for (int j = 0; j < building.size(); j++){
    //     if (rocks.get(i).collide(building.get(j))){
@@ -190,9 +247,9 @@ public class Game{
     for (int i = 0; i < pillars.size(); i++)
       pillars.get(i).render(screen);
       
-    screen.render(1, color(0,200,0),screen.fieldWidth/2,screen.fieldHeight - 25,screen.fieldWidth+5,screen.fieldHeight/25, 0);
-    
-
+    noStroke();
+    //making the background colour sky blue and drawing the ground
+    screen.render(1, color(0,200,0), fieldWidth/2, fieldHieght - fieldHieght/50, fieldWidth+5, fieldHieght/25, 0);
       
     player.render(screen);  //drawing the player
     
@@ -211,7 +268,7 @@ public class Game{
       units.get(i).render(screen);
       
     for (int i = 0; i < building.size(); i++)
-      building.get(i).renderHUD(screen, building.get(i).getX(), building.get(i).getY() - building.get(i).getHeight()*((float)3/ (float)4), 100, 20);
+      building.get(i).renderHUD(screen);
       
     popMatrix();  //reseting the matrix to before it was all rescaled and translated
     
