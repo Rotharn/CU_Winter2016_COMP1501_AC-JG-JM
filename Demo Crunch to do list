@@ -1,0 +1,26 @@
+-Cutscenes (writing, finalizing visual design, images) - 
+  
+-presentation/writeup - 
+
+-make dedicated art arrays (so each object is grabbing pointers to assets, not loading assets itself)
+
+-prevent enemies from attacking if they're significantly off screen
+-new screen buttons
+-new hitspark
+-"Castle" boss, multi-part, individual health values
+-afterimage effect for dash
+-more/better assets
+-more upgrades, improved tree
+-body explosion (get out of jail free card) destroys projectiles around the player)
+
+ground texture/objects (trees rocks)
+
+
+
+-ideas for upgrades
+  -dash destroys projectiles
+  -rocks can be charged
+  -
+
+Extra:
+-opening scene of breaking out of  a cage/a cell/chains
